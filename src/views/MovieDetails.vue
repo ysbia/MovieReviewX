@@ -1,17 +1,19 @@
 <template>
   <div class="card-container">
     <v-card class="card">
+    <small v-if="isEditMovie.actors">Press ctrl + Enter to submit</small> 
       <v-card-title
         @click="isEditMovie.title = true"
         v-if="!isEditMovie.title"
         >{{ mappedMovie.title }}</v-card-title
       >
+      
       <v-text-field
         class="input"
         v-click-outside="outside"
         label="Title"
         v-model="editedMovie.title"
-        @keyup.enter="updateMovie"
+        @keyup.ctrl.enter="updateMovie"
         v-else
       ></v-text-field>
       <v-card-subtitle
@@ -24,7 +26,7 @@
         v-click-outside="outside"
         label="Description"
         v-model="editedMovie.description"
-        @keyup.enter="updateMovie"
+        @keyup.ctrl.enter="updateMovie"
         v-else
       ></v-text-field>
       <template v-if="!isEditMovie.actors">
@@ -48,7 +50,6 @@
         @keyup.ctrl.enter="updateMovie"
         v-else
       >
-      Press ctrl + Enter to submit
       </v-textarea>
       <v-rating
         class="cursor-pointer"
@@ -125,7 +126,11 @@ const updateMovie = () => {
     avg_grade: mappedMovie.value.avg_grade,
     actors: editedMovie.value.actors
       .split("\n")
-      .map((actor: string) => actor.split(" ")[1] ?? "0"),
+      .map((actor: string) => {
+        if(actor.split(" ")[1]){
+            return actor.split(" ")[1];
+        }
+    }),
   });
   isEditMovie.value.title = false;
   isEditMovie.value.description = false;
